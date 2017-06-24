@@ -5,9 +5,7 @@
 #define KEY_NUM 50
 #define COMMENTATE_NUM 500
 
-
-
-
+//创建Dict 结构体 保存字典单词和解释
 struct Dict
 {
 	char key[50];
@@ -16,11 +14,30 @@ struct Dict
 
 };
 
+//菜单的创建
+
+int Menu(){
+	int chooseNum;
+
+	printf("-------------------------\n");
+	puts("       欢迎使用电子词典      \n");
+	puts("       1 查询               \n");
+	puts("       2 添加新词汇或自定义单词的解释\n");
+	puts("       3 退出                \n");
+	printf("-------------------------\n");
+	printf("请输入你的选择\n");
+	scanf("%d", &chooseNum);
+	system("cls");
+	return chooseNum;
+}
 
 //创建文本缓存区
 Dict* DictCache();
-//搜索功能
+//搜索功能 
+	//搜索本地词典
 char* SearchDict(char *buf,Dict *head);
+	//搜索用户词典
+void SearchUserWord(char *keyWord, Dict *head, char *comment);
 //输入功能
 void Input_key(char *inputWord);
 //展示功能
@@ -41,20 +58,8 @@ void UserAdd(Dict *userhead);
 
 void AddNewWord(char *keyWord);
 
-//char *SearchUserWord(char *keyWord,Dict *head);
-void SearchUserWord(char *keyWord, Dict *head, char *comment);
 int main()
 {
-	
-	
-		printf("-------------------------\n");
-		puts("       欢迎使用电子词典      \n");
-		puts("       1 查询               \n");
-		puts("       2 添加新词汇          \n");
-		puts("       3 退出                \n");
-		system("cls");
-	
-	
 	
 	Dict *head = DictCache();
 	Dict *userhead = UserDict();
@@ -62,25 +67,43 @@ int main()
 	char commentWordUser[1024] = {" "};
 	char inputkey[KEY_NUM];
 	
-	Input_key(inputkey);
-	commentWord = SearchDict(inputkey, head);
-	//commentWordUser = SearchUserDict(inputkey, userhead);
-	//commentWordUser = SearchUserWord(inputkey, userhead);
-	SearchUserWord(inputkey, userhead, commentWordUser);
+	int i = Menu();
 
-	
-	Show(commentWord,commentWordUser);
+	do
+	{
+		if (i == 1)
+		{
+			Input_key(inputkey);
+			commentWord = SearchDict(inputkey, head);
+			SearchUserWord(inputkey, userhead, commentWordUser);
+			Show(commentWord, commentWordUser);
+			i = Menu();
+		}
+		else if (i==2)
+		{
+			UserAdd(userhead);
+			printf("添加成功!\n");
+			system("pause");
+			system("cls");
+			i = Menu();
+		}
+		else
+		{
+			puts("你输入的选择有误,请重新输入\n");
+			system("pause");
+			system("cls");
+			i = Menu();
+		}
 
-	UserAdd(userhead);
+	} while (i != 3);
 
-	system("pause");
 	return 0;
 }
 
 
 
 
-
+//将单词读入到缓存
 Dict* DictCache()
 {
 	Dict *head=NULL;
@@ -136,7 +159,7 @@ Dict* DictCache()
 
 
 
-
+//搜索用户单词
 char* SearchDict(char *buf, Dict *head)
 {
 	Dict *cunrrent=head;
@@ -157,9 +180,11 @@ char* SearchDict(char *buf, Dict *head)
 	return NULL;
 }
 
+
+//输入 :
 void Input_key(char *inputWord)
 {
-	printf("请输入你要查询的单词或者汉字\n");
+	printf("请输入单词\n");
 	scanf("%s", inputWord);
 }
 
@@ -187,7 +212,8 @@ void Show(char *commentWord,char *commentWordUser)
 			printf("本地词典:%s\n", commentWord);
 			printf("用户词典:%s\n", commentWordUser);
 		}
-		
+		system("pause");
+		system("cls");
 	}
 	//展示用户自己添加的单词
 
@@ -334,11 +360,10 @@ void UserAdd(Dict *userhead)
 		{
 			return;
 		}
-
 	}
-
 }
 
 
 
 
+/*********************************************/ 
